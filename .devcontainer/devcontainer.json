@@ -1,0 +1,14 @@
+{
+  "name": "Environnement SQL - Cours Energie",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "db",
+  "workspaceFolder": "/workspace",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "mtxr.sqltools",
+        "mtxr.sqltools-driver-pg"
+      ]
+    }
+  }
+}
