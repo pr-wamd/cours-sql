@@ -1,20 +1,14 @@
--- Création de la structure de la table
-CREATE TABLE Eco2mix_Regional (
-    code_insee_region VARCHAR,
-    region VARCHAR,
-    nature VARCHAR,
-    date_releve DATE,
-    heure TIME,
-    date_heure TIMESTAMP WITH TIME ZONE,
-    consommation NUMERIC,
-    thermique NUMERIC,
-    nucleaire NUMERIC,
-    eolien NUMERIC,
-    solaire NUMERIC,
-    hydraulique NUMERIC,
-    pompage NUMERIC,
-    bioenergies NUMERIC
-);
+#!/bin/bash
+set -e
 
--- Décompression et Ingestion massive à la volée !
-COPY Eco2mix_Regional FROM PROGRAM 'zcat /workspace/eco2mix.csv.gz' DELIMITER ';' CSV HEADER;
+echo "🌍 Téléchargement des données ..."
+wget -O /tmp/eco2mix.csv.gz "https://github.com/pr-wamd/cours-sql/releases/download/v1.0/eco2mix-regional-cons-def.csv.zip.gz"
+
+echo "🏗️ Injection dans PostgreSQL..."
+psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-EOSQL
+
+    CREATE TABLE Eco2mix_Regional ( ... );
+    
+    COPY Eco2mix_Regional FROM PROGRAM 'zcat /tmp/eco2mix.csv.gz' DELIMITER ';' CSV HEADER;
+
+EOSQL
